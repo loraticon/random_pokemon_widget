@@ -5,69 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>랜덤 포켓몬 뽑기</title>
   
-  <!-- Tailwind CSS 불러오기 -->
   <script src="https://cdn.tailwindcss.com"></script>
   
   <style>
-    /* 둥근모꼴 픽셀 폰트 */
     @font-face {
       font-family: 'DungGeunMo';
       src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
-      font-weight: normal;
-      font-style: normal;
+      font-weight: normal; font-style: normal;
     }
-    
-    body {
-      font-family: 'DungGeunMo', sans-serif;
-      letter-spacing: 1px;
-    }
-
-    /* 포켓몬 스타일 이중 테두리 박스 */
+    body { font-family: 'DungGeunMo', sans-serif; letter-spacing: 1px; }
     .gb-box {
-      background-color: white;
-      border: 4px solid black;
-      border-radius: 12px;
-      box-shadow: inset 0 0 0 3px white, inset 0 0 0 6px black;
-      padding: 16px 20px;
+      background-color: white; border: 4px solid black; border-radius: 12px;
+      box-shadow: inset 0 0 0 3px white, inset 0 0 0 6px black; padding: 16px 20px;
     }
-
     .gb-box-small {
-      background-color: white;
-      border: 4px solid black;
-      border-radius: 8px;
-      box-shadow: inset 0 0 0 2px white, inset 0 0 0 4px black;
-      padding: 12px 16px;
+      background-color: white; border: 4px solid black; border-radius: 8px;
+      box-shadow: inset 0 0 0 2px white, inset 0 0 0 4px black; padding: 12px 16px;
     }
-
-    /* 픽셀아트 흐려짐 방지 */
-    .pixelated {
-      image-rendering: pixelated;
-    }
-
-    /* 게임보이 배경 패턴 */
+    .pixelated { image-rendering: pixelated; }
     .bg-pattern {
       background-color: #A0B0E0;
       background-image: 
         linear-gradient(45deg, #98A8D8 25%, transparent 25%, transparent 75%, #98A8D8 75%, #98A8D8),
         linear-gradient(45deg, #98A8D8 25%, transparent 25%, transparent 75%, #98A8D8 75%, #98A8D8);
-      background-size: 32px 32px;
-      background-position: 0 0, 16px 16px;
+      background-size: 32px 32px; background-position: 0 0, 16px 16px;
     }
-
-    /* 깜빡이는 커서 애니메이션 */
-    .cursor-blink {
-      display: inline-block;
-      animation: blink 1s step-end infinite;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    /* 이로치 등장 배경 반짝임 */
-    .shiny-bg {
-      animation: shinyFlash 1s ease-in-out;
-    }
+    .cursor-blink { animation: blink 1s step-end infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .shiny-bg { animation: shinyFlash 1s ease-in-out; }
     @keyframes shinyFlash {
       0% { filter: brightness(1); }
       50% { filter: brightness(1.5) hue-rotate(30deg); }
@@ -77,35 +42,27 @@
 </head>
 <body class="w-full h-screen bg-[#687890] flex flex-col items-center justify-center p-2 select-none overflow-hidden text-black">
 
-  <!-- 게임 화면 컨테이너 -->
   <div id="app-container" class="relative w-full max-w-md h-full max-h-[500px] bg-pattern border-8 border-gray-900 rounded-lg shadow-2xl flex flex-col items-center justify-between py-4 box-border">
     
-    <!-- 상단 영역 (스프라이트 및 시작 버튼) -->
+    <!-- 상단 영역 -->
     <div class="flex-1 w-full flex items-center justify-center relative z-10">
-      
-      <!-- 시작 버튼 -->
       <div id="start-btn" class="gb-box flex flex-col gap-4 text-xl sm:text-2xl cursor-pointer hover:bg-gray-100 transition-colors animate-pulse" onclick="handleStart()">
-        <div class="flex items-center gap-2">
-          <span>▶ 뽑기 시작</span>
-        </div>
+        <div class="flex items-center gap-2"><span>▶ 뽑기 시작</span></div>
       </div>
 
-      <!-- 포켓몬 표시 영역 (초기엔 숨김) -->
+      <!-- 포켓몬 표시 영역 -->
       <div id="pokemon-display" class="hidden flex-col items-center animate-bounce">
-        <div class="relative">
-          <!-- 이로치 이펙트 -->
-          <span id="shiny-sparkle" class="hidden absolute -top-4 -right-4 text-3xl animate-ping">✨</span>
+        <div class="relative flex justify-center items-center w-48 h-48">
+          <span id="shiny-sparkle" class="hidden absolute -top-4 right-0 text-3xl animate-ping z-20">✨</span>
           
-          <!-- 포켓몬 이미지 (src 속성을 처음에는 아예 비워두어 에러 방지) -->
-          <img id="pokemon-img" alt="pokemon" class="hidden w-40 h-40 sm:w-48 sm:h-48 pixelated drop-shadow-lg scale-125 sm:scale-150" onerror="handleImageError(this)">
-          
-          <!-- 물음표 (오류 시) -->
-          <div id="question-mark" class="hidden w-40 h-40 flex items-center justify-center text-4xl">?</div>
+          <!-- 이미지 태그에 불필요한 속성을 모두 제거하고 JS에서 안전하게 통제합니다 -->
+          <img id="pokemon-img" alt="pokemon" class="hidden z-10">
+          <div id="question-mark" class="hidden text-5xl font-bold z-10">?</div>
         </div>
       </div>
     </div>
 
-    <!-- 예/아니오 선택 창 (초기엔 숨김) -->
+    <!-- 예/아니오 선택 창 -->
     <div id="yes-no-box" class="hidden absolute right-4 bottom-[120px] sm:bottom-[130px] gb-box-small flex-col gap-2 z-40 text-lg sm:text-xl">
       <div class="flex items-center gap-2 cursor-pointer" onmouseenter="setCursor('yes')" onclick="handleDrawAgain()">
         <span id="cursor-yes" class="visible">▶</span><span>예</span>
@@ -115,14 +72,12 @@
       </div>
     </div>
 
-    <!-- 하단 대화창 영역 -->
+    <!-- 하단 대화창 -->
     <div class="w-[92%] mb-1 relative z-20">
-      <!-- 안내원 이름표 (초기엔 숨김) -->
       <div id="name-tag" class="hidden absolute -top-8 left-0 gb-box !py-1 !px-3 z-30">
         <span class="text-base sm:text-lg">안내원</span>
       </div>
 
-      <!-- 메인 대화창 박스 -->
       <div id="dialogue-box" class="gb-box w-full h-[100px] sm:h-[120px] text-lg sm:text-xl leading-relaxed whitespace-pre-wrap relative cursor-pointer flex flex-col justify-center" onclick="handleNextDialogue()">
         <p id="dialogue-text">랜덤 포켓몬 뽑기 기계다!<br>작동시킬까?</p>
         <p id="loading-text" class="hidden absolute top-4 left-4 text-sm">통신 중입니다...</p>
@@ -130,23 +85,19 @@
     </div>
   </div>
 
-  <!-- 하단 크레딧 -->
   <div class="mt-2 text-center text-[10px] sm:text-xs text-white/70">
     <p>비상업적 팬 프로젝트입니다. (Data: PokeAPI / Sprites: Smogon)</p>
     <p>© Nintendo, Creatures, GAME FREAK, TV Tokyo, ShoPro, JR Kikaku. © Pokémon.</p>
   </div>
 
-  <!-- Javascript 로직 -->
   <script>
-    // 상태 변수들
-    let step = 0; // 0: 시작, 1: 타자기, 2: 결과, 3: 질문, 4: 인사
+    let step = 0; 
     let pokemon = null;
     let isLoading = false;
     let typeWriterTimer = null;
     let currentCursor = 'yes';
     const introText = "오늘의 포켓몬은 뭘까요~?\n피핏카츄!";
 
-    // DOM 요소 가져오기
     const appContainer = document.getElementById('app-container');
     const startBtn = document.getElementById('start-btn');
     const pokemonDisplay = document.getElementById('pokemon-display');
@@ -160,17 +111,15 @@
     const dialogueText = document.getElementById('dialogue-text');
     const loadingText = document.getElementById('loading-text');
 
-    // 포켓몬 데이터 가져오기 API
     async function fetchRandomPokemon() {
       isLoading = true;
       updateLoadingUI();
       
       try {
         const randomId = Math.floor(Math.random() * 1025) + 1;
-        const SHINY_RATE = 4096; // 1/4096 확률 (테스트를 원하시면 1로 변경)
+        const SHINY_RATE = 4096; 
         const isShiny = Math.floor(Math.random() * SHINY_RATE) === 0;
         
-        // 공식 데이터를 호출하여 가장 안정적으로 이미지를 가져옵니다.
         const pokeRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
         const pokeData = await pokeRes.json();
         
@@ -192,7 +141,6 @@
 
         pokemon = { id: randomId, name, sprite: spriteUrl, fallback: fallbackUrl, isShiny };
       } catch (error) {
-        console.error("데이터 로드 실패", error);
         pokemon = { id: 0, name: '미싱노', sprite: '', fallback: '', isShiny: false };
       } finally {
         isLoading = false;
@@ -200,20 +148,19 @@
       }
     }
 
-    // 게임 시작
     function handleStart() {
       step = 1;
       pokemon = null;
       clearInterval(typeWriterTimer);
       
-      // UI 초기화
       startBtn.classList.add('hidden');
       pokemonDisplay.classList.add('hidden');
+      pokemonImg.classList.add('hidden');
+      questionMark.classList.add('hidden');
       yesNoBox.classList.add('hidden');
       nameTag.classList.remove('hidden');
       appContainer.classList.remove('shiny-bg');
       
-      // 타자기 효과 시작
       let currentIndex = 0;
       dialogueText.innerHTML = '';
       
@@ -230,31 +177,48 @@
         }
       }, 120);
 
-      // 백그라운드에서 데이터 호출 시작
       fetchRandomPokemon();
     }
 
-    // 결과 화면 보여주기
+    // 버그가 발생하지 않도록 완전히 새로 작성된 안전한 이미지 로딩 로직입니다.
     function showPokemonResult() {
       if (!pokemon) return; 
 
       pokemonDisplay.classList.remove('hidden');
       pokemonDisplay.classList.add('flex');
       
-      // [버그 수정 포인트] 에러로 인해 인라인 스타일로 적용되었을 수 있는 숨김 처리 초기화
-      pokemonImg.style.display = '';
-
-      if (pokemon.sprite) {
-        pokemonImg.src = pokemon.sprite;
+      // 이미지를 백그라운드에서 먼저 불러옵니다.
+      const safeImg = new Image();
+      
+      // 1. 정상적으로 이미지를 불러왔을 때
+      safeImg.onload = function() {
+        pokemonImg.src = safeImg.src;
         pokemonImg.className = "w-40 h-40 sm:w-48 sm:h-48 pixelated drop-shadow-lg scale-125 sm:scale-150"; 
         pokemonImg.classList.remove('hidden');
-        questionMark.classList.add('hidden');
-      } else {
-        pokemonImg.classList.add('hidden');
-        questionMark.classList.remove('hidden');
-      }
+      };
+      
+      // 2. 이미지가 깨졌거나 없을 때 (에러 발생 시 백업 이미지 호출)
+      safeImg.onerror = function() {
+        const fallbackImg = new Image();
+        fallbackImg.onload = function() {
+          pokemonImg.src = fallbackImg.src;
+          pokemonImg.className = "w-40 h-40 sm:w-48 sm:h-48 drop-shadow-lg scale-100 sm:scale-110"; 
+          pokemonImg.classList.remove('hidden');
+        };
+        // 백업 이미지마저 없다면 물음표 출력
+        fallbackImg.onerror = function() {
+          questionMark.classList.remove('hidden');
+        };
+        
+        if (pokemon.fallback) fallbackImg.src = pokemon.fallback;
+        else questionMark.classList.remove('hidden');
+      };
 
-      // 이로치 처리
+      // 로딩 시작
+      if (pokemon.sprite) safeImg.src = pokemon.sprite;
+      else questionMark.classList.remove('hidden');
+
+      // 텍스트 및 이로치 효과 출력
       if (pokemon.isShiny) {
         shinySparkle.classList.remove('hidden');
         appContainer.classList.add('shiny-bg');
@@ -265,7 +229,6 @@
       }
     }
 
-    // 대화창 클릭 (다음으로 넘어가기)
     function handleNextDialogue() {
       if (step === 2) {
         step = 3;
@@ -282,12 +245,8 @@
       }
     }
 
-    // 다시 뽑기
-    function handleDrawAgain() { 
-      handleStart(); 
-    }
+    function handleDrawAgain() { handleStart(); }
 
-    // 종료
     function handleQuit() {
       step = 4;
       yesNoBox.classList.add('hidden');
@@ -297,38 +256,18 @@
       dialogueText.innerHTML = `이용해 주셔서 감사합니다!<br>다음에 또 만나요! <span class="cursor-blink text-red-600">▼</span>`;
     }
 
-    // 예/아니오 커서 이동
     function setCursor(type) {
       currentCursor = type;
       if (type === 'yes') {
-        cursorYes.className = 'visible'; 
-        cursorNo.className = 'invisible';
+        cursorYes.className = 'visible'; cursorNo.className = 'invisible';
       } else {
-        cursorYes.className = 'invisible'; 
-        cursorNo.className = 'visible';
+        cursorYes.className = 'invisible'; cursorNo.className = 'visible';
       }
     }
 
-    // 로딩 UI 업데이트
     function updateLoadingUI() {
-      if ((step === 2 || step === 3) && isLoading) {
-        loadingText.classList.remove('hidden');
-      } else {
-        loadingText.classList.add('hidden');
-      }
-    }
-
-    // 이미지 로드 실패 시 고해상도 일러스트로 대체
-    function handleImageError(img) {
-      if (!pokemon) return; 
-      
-      if (img.src !== pokemon.fallback && pokemon.fallback) {
-        img.src = pokemon.fallback;
-        img.className = "w-40 h-40 sm:w-48 sm:h-48 drop-shadow-lg scale-100 sm:scale-110"; 
-      } else {
-        img.style.display = 'none';
-        questionMark.classList.remove('hidden');
-      }
+      if ((step === 2 || step === 3) && isLoading) loadingText.classList.remove('hidden');
+      else loadingText.classList.add('hidden');
     }
   </script>
 </body>

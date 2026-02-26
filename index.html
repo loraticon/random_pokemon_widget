@@ -95,8 +95,10 @@
         <div class="relative">
           <!-- 이로치 이펙트 -->
           <span id="shiny-sparkle" class="hidden absolute -top-4 -right-4 text-3xl animate-ping">✨</span>
+          
           <!-- 포켓몬 이미지 (src 속성을 처음에는 아예 비워두어 에러 방지) -->
           <img id="pokemon-img" alt="pokemon" class="hidden w-40 h-40 sm:w-48 sm:h-48 pixelated drop-shadow-lg scale-125 sm:scale-150" onerror="handleImageError(this)">
+          
           <!-- 물음표 (오류 시) -->
           <div id="question-mark" class="hidden w-40 h-40 flex items-center justify-center text-4xl">?</div>
         </div>
@@ -165,10 +167,10 @@
       
       try {
         const randomId = Math.floor(Math.random() * 1025) + 1;
-        const SHINY_RATE = 4096; // 1/4096 확률
+        const SHINY_RATE = 4096; // 1/4096 확률 (테스트를 원하시면 1로 변경)
         const isShiny = Math.floor(Math.random() * SHINY_RATE) === 0;
         
-        // 가장 안정적인 공식 데이터 방식으로 복구 (이미지 누락 방지)
+        // 공식 데이터를 호출하여 가장 안정적으로 이미지를 가져옵니다.
         const pokeRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
         const pokeData = await pokeRes.json();
         
@@ -228,6 +230,7 @@
         }
       }, 120);
 
+      // 백그라운드에서 데이터 호출 시작
       fetchRandomPokemon();
     }
 
@@ -279,8 +282,12 @@
       }
     }
 
-    function handleDrawAgain() { handleStart(); }
+    // 다시 뽑기
+    function handleDrawAgain() { 
+      handleStart(); 
+    }
 
+    // 종료
     function handleQuit() {
       step = 4;
       yesNoBox.classList.add('hidden');
@@ -290,15 +297,19 @@
       dialogueText.innerHTML = `이용해 주셔서 감사합니다!<br>다음에 또 만나요! <span class="cursor-blink text-red-600">▼</span>`;
     }
 
+    // 예/아니오 커서 이동
     function setCursor(type) {
       currentCursor = type;
       if (type === 'yes') {
-        cursorYes.className = 'visible'; cursorNo.className = 'invisible';
+        cursorYes.className = 'visible'; 
+        cursorNo.className = 'invisible';
       } else {
-        cursorYes.className = 'invisible'; cursorNo.className = 'visible';
+        cursorYes.className = 'invisible'; 
+        cursorNo.className = 'visible';
       }
     }
 
+    // 로딩 UI 업데이트
     function updateLoadingUI() {
       if ((step === 2 || step === 3) && isLoading) {
         loadingText.classList.remove('hidden');
@@ -307,8 +318,9 @@
       }
     }
 
+    // 이미지 로드 실패 시 고해상도 일러스트로 대체
     function handleImageError(img) {
-      if (!pokemon) return; // 포켓몬 데이터가 없으면 무시 (초기 에러 방지)
+      if (!pokemon) return; 
       
       if (img.src !== pokemon.fallback && pokemon.fallback) {
         img.src = pokemon.fallback;

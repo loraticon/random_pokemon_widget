@@ -222,7 +222,7 @@
       if (pokemon.isShiny) {
         shinySparkle.classList.remove('hidden');
         appContainer.classList.add('shiny-bg');
-        dialogueText.innerHTML = `앗! 야생의 <strong class="text-yellow-600">색이다른 ${pokemon.name}</strong>(이)가<br>나타났다! ✨ <span class="cursor-blink text-red-600">▼</span>`;
+        dialogueText.innerHTML = `앗! 야생의 <strong class="text-yellow-600">색이다른 ${pokemon.name}</strong>(이)가<br>나타났다! <span class="cursor-blink text-red-600">▼</span>`;
       } else {
         shinySparkle.classList.add('hidden');
         dialogueText.innerHTML = `앗! 야생의 <strong class="text-red-600">${pokemon.name}</strong>(이)가<br>나타났다! <span class="cursor-blink text-red-600">▼</span>`;
@@ -272,4 +272,5 @@
   </script>
 </body>
 </html>
+
 

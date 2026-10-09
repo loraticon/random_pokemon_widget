@@ -83,6 +83,10 @@
         <p id="loading-text" class="hidden absolute top-4 left-4 text-sm">통신 중입니다...</p>
       </div>
     </div>
+
+    <p class="w-[92%] mt-2 px-2 py-1.5 border-2 border-gray-900 rounded bg-white/90 text-center text-xs sm:text-sm leading-snug relative z-20" role="note">
+      ※ 이전 버전 위젯은 2026년 10월 14일 오전 9시(KST)에 종료됩니다.
+    </p>
   </div>
 
   <div class="mt-2 text-center text-[10px] sm:text-xs text-white/70">
@@ -117,7 +121,7 @@
       
       try {
         const randomId = Math.floor(Math.random() * 1025) + 1;
-        const SHINY_RATE = 4096; 
+        const SHINY_RATE = 1; // 1/1 = 100%
         const isShiny = Math.floor(Math.random() * SHINY_RATE) === 0;
         
         const pokeRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);

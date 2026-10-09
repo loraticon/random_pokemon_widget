@@ -129,10 +129,14 @@
         
         let spriteUrl = '';
         let fallbackUrl = '';
+        let spriteIsPixelated = true;
 
         if (isShiny) {
-          spriteUrl = pokeData.sprites.front_shiny || pokeData.sprites.front_default;
+          const shinySprite = pokeData.sprites.front_shiny;
+          const shinyArtwork = pokeData.sprites.other['official-artwork'].front_shiny;
+          spriteUrl = shinySprite || shinyArtwork || pokeData.sprites.front_default;
           fallbackUrl = pokeData.sprites.other['official-artwork'].front_shiny || pokeData.sprites.other['official-artwork'].front_default;
+          spriteIsPixelated = Boolean(shinySprite);
         } else {
           spriteUrl = pokeData.sprites.front_default;
           fallbackUrl = pokeData.sprites.other['official-artwork'].front_default;
@@ -143,7 +147,7 @@
         const koNameEntry = speciesData.names.find((n) => n.language.name === 'ko');
         const name = koNameEntry ? koNameEntry.name : speciesData.name.toUpperCase();
 
-        pokemon = { id: randomId, name, sprite: spriteUrl, fallback: fallbackUrl, isShiny };
+        pokemon = { id: randomId, name, sprite: spriteUrl, fallback: fallbackUrl, isShiny, spriteIsPixelated };
       } catch (error) {
         pokemon = { id: 0, name: '미싱노', sprite: '', fallback: '', isShiny: false };
       } finally {
@@ -197,7 +201,9 @@
       // 1. 정상적으로 이미지를 불러왔을 때
       safeImg.onload = function() {
         pokemonImg.src = safeImg.src;
-        pokemonImg.className = "w-40 h-40 sm:w-48 sm:h-48 pixelated drop-shadow-lg scale-125 sm:scale-150"; 
+        pokemonImg.className = pokemon.spriteIsPixelated
+          ? "w-40 h-40 sm:w-48 sm:h-48 pixelated drop-shadow-lg scale-125 sm:scale-150"
+          : "w-40 h-40 sm:w-48 sm:h-48 drop-shadow-lg scale-100 sm:scale-110";
         pokemonImg.classList.remove('hidden');
       };
       
